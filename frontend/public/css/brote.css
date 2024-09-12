@@ -1,0 +1,22 @@
+.mynav{
+  margin-top: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+.mynav ul li{
+  display: inline-block;
+  padding: 15px;
+  background: #e0e0e0;
+  margin-right: 5px;
+}
+.mynav ul li a{
+  text-decoration: none;
+  color: black;
+}
+.file-uploader{
+  padding: 30px 0;
+}
+.section-title h2{
+  text-align: center;
+  margin-top: 15px;
+  font-size: 16px;
+}

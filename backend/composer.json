@@ -1,0 +1,10 @@
+{
+    "autoload": {
+      "psr-4": {
+        "App\\": "app/"
+      }
+    },
+    "require": {
+        "phenx/php-font-lib": "^1.0"
+    }
+}
