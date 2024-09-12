@@ -110,7 +110,7 @@ const HomeComponent = (props) => {
                     <div className="container">
                          <div className="row">
                               <div className="col-md-12">
-                                   <h2>Upload Font</h2>
+                                   <h2>Manage Fonts</h2>
                               </div>
                          </div>
                     </div>

@@ -9,17 +9,12 @@ const Navbar = () => {
                         <ul>
                             <li>
                                 <Link to="/">
-                                    Upload Font
+                                    Manage Fonts
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/">
-                                    Create Font Group
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/">
-                                    All Font Group
+                                <Link to="/fontGroup">
+                                    Manage Font Groups
                                 </Link>
                             </li>
                         </ul>
