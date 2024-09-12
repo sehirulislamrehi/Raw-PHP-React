@@ -119,7 +119,7 @@ const HomeComponent = (props) => {
                <section className="file-uploader">
                     <div className="container">
 
-                         <div className="row">
+                         <div className="row font-group-row">
 
                               {/* image */}
                               <div className="col-md-12">
@@ -136,11 +136,11 @@ const HomeComponent = (props) => {
                     <div className="container">
                          <div className="row">
                               <div className="col-md-12">
-                                   <table className="table table-striped table-dark">
+                                   <table className="table table-striped">
                                         <thead>
                                              <tr>
                                                   <th>SI</th>
-                                                  <th>Name</th>
+                                                  <th>Font Name</th>
                                                   <th>Preview</th>
                                                   <th>Action</th>
                                              </tr>
@@ -151,10 +151,10 @@ const HomeComponent = (props) => {
                                                        <td>{index + 1}</td>
                                                        <td>{font.name}</td>
                                                        <td>
-                                                            <p style={{ fontFamily: font.name }}>Example style</p>
+                                                            <p style={{ fontFamily: font.name }} className="example-font">Example style</p>
                                                        </td>
                                                        <td>
-                                                            <button onClick={() => deleteFont(font.id)}>Delete</button>
+                                                            <button onClick={() => deleteFont(font.id)} className="btn btn-sm btn-danger">Delete</button>
                                                        </td>
                                                   </tr>
                                              ))}

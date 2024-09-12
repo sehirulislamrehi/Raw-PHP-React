@@ -11,8 +11,8 @@ import { Provider } from 'react-redux';
 
 
 
-window.url = "http://localhost/font-group-assesment/backend/routes/router.php"
-window.image_path = "http://localhost/font-group-assesment/backend/"
+window.url = "http://localhost/zeptoapps-test/backend/routes/router.php"
+window.image_path = "http://localhost/zeptoapps-test/backend/"
 const myStore = createStore(allReducer)
 
 // window.url = "http://127.0.0.1:8000/api"

@@ -2,26 +2,37 @@
 
 namespace App\Controllers;
 
-use App\Interfaces\Font as InterfacesFont;
+use App\Interfaces\Font\ReadFont;
+use App\Interfaces\Font\WriteFont;
 use Exception;
 
 
 class Font
 {
 
-    private InterfacesFont $font_repository;
+    private ReadFont $readFontRepository;
+    private WriteFont $writeFontRepository;
 
-    public function __construct(InterfacesFont $font_interface)
+    public function __construct(ReadFont $readFontInterface, WriteFont $writeFontInterface)
     {
-        $this->font_repository = $font_interface;
+        $this->readFontRepository = $readFontInterface;
+        $this->writeFontRepository = $writeFontInterface;
     }
 
 
-    // Handle GET requests (get fonts data)
     public function index()
     {
         try{
-            return $response = $this->font_repository->allFonts();
+
+            if( $_SERVER['REQUEST_METHOD'] != "GET" ){
+                return [
+                    "status" => false,
+                    "message" => "GET method is supported for the route. POST found.",
+                    "data" => []
+                ];
+            }
+
+            return $response = $this->readFontRepository->allFonts();
         }
         catch (Exception $e) {
             return [
@@ -32,9 +43,16 @@ class Font
         }
     }
 
-    // Handle POST requests (Create a new font)
     public function create()
     {
+
+        if( $_SERVER['REQUEST_METHOD'] != "POST" ){
+            return [
+                "status" => false,
+                "message" => "POST method is supported for the route. GET found.",
+                "data" => []
+            ];
+        }
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
             
@@ -42,6 +60,17 @@ class Font
             $fileName = $_FILES['image']['name'];
             $fileSize = $_FILES['image']['size'];
             $fileType = $_FILES['image']['type'];
+        
+            // Get the file extension using pathinfo
+            $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+            if($fileExtension != "ttf"){
+                return [
+                    "status" => false,
+                    "message" => "File type must be .ttf",
+                    "data" => []
+                ];
+            }
 
             // Define where to move the uploaded file
             $uploadDir = __DIR__ . '/../../public/uploads/';
@@ -58,10 +87,10 @@ class Font
                 // Extract font name
                 try {
 
-                    $fontName = $this->font_repository->getFontName($destPath);
+                    $fontName = $this->readFontRepository->getFontName($destPath);
 
                     //insert the font
-                    return $response = $this->font_repository->uploadFonts([
+                    return $response = $this->writeFontRepository->uploadFonts([
                         'destPath' => "public/uploads/$fileName",
                         'fileName' => $fileName,
                         'fontName' => $fontName,
@@ -92,7 +121,16 @@ class Font
 
     public function delete(){
         try{
-            return $response = $this->font_repository->deleteFonts($_REQUEST);
+
+            if( $_SERVER['REQUEST_METHOD'] != "POST" ){
+                return [
+                    "status" => false,
+                    "message" => "POST method is supported for the route. GET found.",
+                    "data" => []
+                ];
+            }
+
+            return $response = $this->writeFontRepository->deleteFonts($_REQUEST);
         }
         catch (Exception $e) {
             return [

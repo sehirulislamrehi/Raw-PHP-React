@@ -12,39 +12,78 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config.php';
 
 use App\Controllers\Font;
-use App\Repositories\FontRepository;
-
-$font_repository = new FontRepository();
-$fontController = new Font($font_repository);
-
+use App\Controllers\FontGroup;
+use App\Repositories\FontGroup\FontGroupRepository;
+use App\Repositories\Font\ReadFontRepository;
+use App\Repositories\Font\WriteFontRepository;
 
 if (isset($_GET['dispatch'])) {
 
-    $method = isset(explode(".",$_GET['dispatch'])[1]) ? explode(".",$_GET['dispatch'])[1] : null;
+    $controller = isset(explode(".",$_GET['dispatch'])[0]) ? explode(".",$_GET['dispatch'])[0] : "";
+    $method = isset(explode(".",$_GET['dispatch'])[1]) ? explode(".",$_GET['dispatch'])[1] : "";
 
-    switch ($method) {
+    switch ($controller) {
         
-        case 'index':
-            $response = $fontController->index(); // Get the response data
-            sendJsonResponse(200, $response); // Send JSON response
+        case 'Font':
+
+            $readFontRepository = new ReadFontRepository($conn);
+            $writeFontRepository = new WriteFontRepository($conn);
+            $fontController = new Font($readFontRepository,$writeFontRepository);
+
+            switch($method){
+                
+                case 'index':
+                    $response = $fontController->index(); 
+                    sendJsonResponse(200, $response); 
+                    break;
+        
+                case 'create':
+                    $response = $fontController->create(); 
+                    sendJsonResponse(200, $response); 
+                    break;
+        
+                case 'delete':
+                    $response = $fontController->delete(); 
+                    sendJsonResponse(200, $response); 
+                    break;
+        
+                default:
+                    http_response_code(405);
+                    echo json_encode(['message' => 'Method not found']);
+                    break;
+            }
+
             break;
 
-        case 'create':
-            $response = $fontController->create(); // Get the response data
-            sendJsonResponse(200, $response); // Send JSON response
-            break;
+        case 'FontGroup':
 
-        case 'delete':
-            $response = $fontController->delete(); // Get the response data
-            sendJsonResponse(200, $response); // Send JSON response
+            $fontGroupRepository = new FontGroupRepository($conn);
+            $fontGroupController = new FontGroup($fontGroupRepository);
+
+            switch($method){
+
+                case 'index':
+                    $response = $fontGroupController->index();
+                    sendJsonResponse(200, $response); 
+                    break;
+        
+                default:
+                    http_response_code(405);
+                    echo json_encode(['message' => 'Method not found']);
+                    break;
+            }
+
             break;
 
         default:
+
             http_response_code(405);
-            echo json_encode(['message' => 'Method not found']);
+            echo json_encode(['message' => 'Controller not found']);
             break;
+            
     }
 } else {
     http_response_code(404);
