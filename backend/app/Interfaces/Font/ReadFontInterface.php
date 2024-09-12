@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Font;
 
-interface ReadFont{
+interface ReadFontInterface{
     public function getFontName($params);
     public function allFonts();
 }

@@ -4,10 +4,10 @@ namespace App\Repositories\Font;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-use App\Interfaces\Font\WriteFont;
+use App\Interfaces\Font\WriteFontInterface;
 use Exception;
 
-class WriteFontRepository implements WriteFont
+class WriteFontRepository implements WriteFontInterface
 {
 
     private $conn;

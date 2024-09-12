@@ -2,18 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Interfaces\Font\ReadFont;
-use App\Interfaces\Font\WriteFont;
+use App\Interfaces\Font\ReadFontInterface;
+use App\Interfaces\Font\WriteFontInterface;
 use Exception;
 
 
 class Font
 {
 
-    private ReadFont $readFontRepository;
-    private WriteFont $writeFontRepository;
+    private ReadFontInterface $readFontRepository;
+    private WriteFontInterface $writeFontRepository;
 
-    public function __construct(ReadFont $readFontInterface, WriteFont $writeFontInterface)
+    public function __construct(ReadFontInterface $readFontInterface, WriteFontInterface $writeFontInterface)
     {
         $this->readFontRepository = $readFontInterface;
         $this->writeFontRepository = $writeFontInterface;

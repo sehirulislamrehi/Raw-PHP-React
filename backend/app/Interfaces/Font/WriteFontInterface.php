@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\Font;
 
-interface WriteFont{
+interface WriteFontInterface{
     public function uploadFonts($params);
     public function deleteFonts($params);
 }

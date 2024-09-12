@@ -4,11 +4,11 @@ namespace App\Repositories\Font;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-use App\Interfaces\Font\ReadFont;
+use App\Interfaces\Font\ReadFontInterface;
 use Exception;
 use FontLib\Font as FontLibFont;
 
-class ReadFontRepository implements ReadFont
+class ReadFontRepository implements ReadFontInterface
 {
 
     private $conn;
