@@ -19,7 +19,7 @@ class FontGroup
           $this->writeFontGroupRepository = $writeFontGroupInterface;
      }
 
-     public function index()
+    public function index()
     {
         try{
 
@@ -42,4 +42,27 @@ class FontGroup
         }
     }
 
+
+    public function create()
+    {
+        try{
+
+            if( $_SERVER['REQUEST_METHOD'] != "POST" ){
+                return [
+                    "status" => false,
+                    "message" => "POST method is supported for the route. GET found.",
+                    "data" => []
+                ];
+            }
+
+            return $response = $this->writeFontGroupRepository->createFontsGroup($_REQUEST);
+        }
+        catch (Exception $e) {
+            return [
+                "status" => false,
+                "message" => $e->getMessage(),
+                "data" => []
+            ];
+        }
+    }
 }

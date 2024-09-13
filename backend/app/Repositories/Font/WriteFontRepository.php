@@ -136,6 +136,15 @@ class WriteFontRepository implements WriteFontInterface
                 // Close the statement
                 $query->close();
 
+                $query = $this->conn->prepare("DELETE FROM font_group_data WHERE font_id = $id");
+                if(!$query->execute()) {
+                    return [
+                        "status" => false,
+                        "message" => $query->error,
+                        "data" => []
+                    ];
+                }
+
                 return [
                     "status" => true,
                     "message" => "Font removed",

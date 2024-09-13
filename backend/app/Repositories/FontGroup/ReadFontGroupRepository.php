@@ -27,9 +27,11 @@ class ReadFontGroupRepository implements ReadFontGroupInterface
 
                $query = $this->conn->prepare("SELECT 
                font_group.id as font_group_id, font_group.name as font_group_name, font_group.is_active, font_group.created_at, 
-               font_group_data.name as font_name, font_group_data.specific_size, font_group_data.price_change  
+               font_group_data.name as font_name, font_group_data.specific_size, font_group_data.price_change, font_group_data.font_id,
+               fonts.name as fonts_table_font_name  
                FROM font_group
                LEFT JOIN font_group_data ON font_group.id = font_group_data.font_group_id
+               LEFT JOIN fonts ON font_group_data.font_id = fonts.id
                ORDER BY font_group.id DESC");
 
                if ($query === false) {
@@ -75,6 +77,7 @@ class ReadFontGroupRepository implements ReadFontGroupInterface
 
                          // Add the font data under 'font_group_data' key
                          $result[$fontGroupId]['font_group_data'][] = [
+                              'fonts_table_font_name' => $row['fonts_table_font_name'],
                               'font_name' => $row['font_name'],
                               'specific_size' => $row['specific_size'],
                               'price_change' => $row['price_change']

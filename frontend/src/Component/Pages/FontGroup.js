@@ -110,24 +110,23 @@ const FontGroupComponent = (props) => {
             formData.append("groupName", fontGroupName);
             formData.append("rowData", JSON.stringify(rows));
 
-            const delete_font_url = `${window.url}?dispatch=Font.delete`;
+            const create_font_group_url = `${window.url}?dispatch=FontGroup.create`;
             const options = {
                 method: "POST",
                 body: formData
             };
 
-            // fetch(delete_font_url, options)
-            //     .then(response => response.json())
-            //     .then(response => {
-            //         alert(response.message)
-            //         if (response.status == true) {
-            //             // history.push("/all-font")
-            //             getFonts();
-            //         }
-            //     })
-            //     .catch(response => {
-            //         console.log(response)
-            //     })
+            fetch(create_font_group_url, options)
+                .then(response => response.json())
+                .then(response => {
+                    alert(response.message)
+                    if (response.status == true) {
+                        getFontGroup();
+                    }
+                })
+                .catch(response => {
+                    console.log(response)
+                })
 
         }
     }
@@ -197,7 +196,7 @@ const FontGroupComponent = (props) => {
                                         >
                                             <option value="" disabled>Select Font</option>
                                             {fonts.map((font) => (
-                                                <option key={font.id} value={font.name}>
+                                                <option key={font.id} value={font.id}>
                                                     {font.name}
                                                 </option>
                                             ))}

@@ -71,6 +71,11 @@ if (isset($_GET['dispatch'])) {
                     $response = $fontGroupController->index();
                     sendJsonResponse(200, $response); 
                     break;
+
+                case 'create':
+                    $response = $fontGroupController->create();
+                    sendJsonResponse(200, $response); 
+                    break;
         
                 default:
                     http_response_code(405);
