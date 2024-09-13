@@ -2,18 +2,21 @@
 
 namespace App\Controllers;
 
-use App\Interfaces\FontGroup as InterfacesFontGroup;
+use App\Interfaces\FontGroup\ReadFontGroupInterface;
+use App\Interfaces\FontGroup\WriteFontGroupInterface;
 use Exception;
 
 
 class FontGroup
 {
 
-     private InterfacesFontGroup $fontGroupRepository;
+     private ReadFontGroupInterface $readFontGroupRepository;
+     private WriteFontGroupInterface $writeFontGroupRepository;
 
-     public function __construct(InterfacesFontGroup $fontGroupRepository)
+     public function __construct(ReadFontGroupInterface $readFontGroupInterface, WriteFontGroupInterface $writeFontGroupInterface)
      {
-          $this->fontGroupRepository = $fontGroupRepository;
+          $this->readFontGroupRepository = $readFontGroupInterface;
+          $this->writeFontGroupRepository = $writeFontGroupInterface;
      }
 
      public function index()
@@ -28,7 +31,7 @@ class FontGroup
                 ];
             }
 
-            return $response = $this->fontGroupRepository->allFontsGroup();
+            return $response = $this->readFontGroupRepository->allFontsGroup();
         }
         catch (Exception $e) {
             return [
@@ -39,26 +42,4 @@ class FontGroup
         }
     }
 
-     public function create()
-     {
-
-          if ($_SERVER['REQUEST_METHOD'] != "POST") {
-               return [
-                    "status" => false,
-                    "message" => "POST method is supported for the route. GET found.",
-                    "data" => []
-               ];
-          }
-
-          try{
-
-          }
-          catch( Exception $e ){
-               return [
-                    "status" => false,
-                    "message" => $e->getMessage(),
-                    "data" => []
-               ];
-          }
-     }
 }

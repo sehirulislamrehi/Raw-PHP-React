@@ -81,3 +81,10 @@ th{
   display: inline-block;
   padding: 5px;
 }
+.badge {
+  margin-right: 5px;
+}
+.badge-info{
+    background: #326ffd;
+    color: white;
+}

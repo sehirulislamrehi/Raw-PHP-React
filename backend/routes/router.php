@@ -16,9 +16,10 @@ require_once __DIR__ . '/../config.php';
 
 use App\Controllers\Font;
 use App\Controllers\FontGroup;
-use App\Repositories\FontGroup\FontGroupRepository;
 use App\Repositories\Font\ReadFontRepository;
 use App\Repositories\Font\WriteFontRepository;
+use App\Repositories\FontGroup\ReadFontGroupRepository;
+use App\Repositories\FontGroup\WriteFontGroupRepository;
 
 if (isset($_GET['dispatch'])) {
 
@@ -60,8 +61,9 @@ if (isset($_GET['dispatch'])) {
 
         case 'FontGroup':
 
-            $fontGroupRepository = new FontGroupRepository($conn);
-            $fontGroupController = new FontGroup($fontGroupRepository);
+            $readFontGroupRepository = new ReadFontGroupRepository($conn);
+            $writeFontGroupRepository = new WriteFontGroupRepository($conn);
+            $fontGroupController = new FontGroup($readFontGroupRepository,$writeFontGroupRepository);
 
             switch($method){
 

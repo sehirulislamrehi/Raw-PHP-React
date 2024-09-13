@@ -29,7 +29,7 @@ const FontGroupComponent = (props) => {
             alert(`${field} cannot be less than 0`);
             return;
         }
-        
+
         const updatedRows = rows.map((row, i) =>
             i === index ? { ...row, [field]: value } : row
         );
@@ -52,22 +52,40 @@ const FontGroupComponent = (props) => {
                 console.log(error);
             });
     };
-
     const [fonts, setFonts] = useState([]);
 
+    const getFontGroup = () => {
+        const get_font_group_url = `${window.url}?dispatch=FontGroup.index`;
+        fetch(get_font_group_url, {
+            method: "GET",
+
+        })
+            .then(response => response.json())
+            .then(response => {
+                if (response.status === true) {
+                    setAllFontGroup(response.data);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    const [allFontGroup, setAllFontGroup] = useState([]);
+
     useEffect(() => {
+        getFontGroup();
         getFonts();
     }, []);
 
-    const [fontGroup,setFontGroup] = useState(null);
-    function createFontGroup(){
-        if(rows.length <= 0){
+    const [fontGroupName, setFontGroupName] = useState(null);
+    function createFontGroup() {
+        if (rows.length <= 0) {
             alert("Please add atleast one row")
             return;
         }
 
-        if( window.confirm("Are you sure you want to create font group?") ){
-            if(!fontGroup){
+        if (window.confirm("Are you sure you want to create font group?")) {
+            if (!fontGroupName) {
                 alert("Please enter the font group name")
                 return;
             }
@@ -76,20 +94,20 @@ const FontGroupComponent = (props) => {
 
             const emptyKeys = new Set(); // Use a Set to avoid duplicate keys
 
-rows.forEach(value => {
-    Object.entries(value).forEach(([index, data]) => {
-        if (data === '' || data === null || data === undefined) {
-            emptyKeys.add(index); // Add the key to the Set
-        }
-    });
-});
+            rows.forEach(value => {
+                Object.entries(value).forEach(([index, data]) => {
+                    if (data === '' || data === null || data === undefined) {
+                        emptyKeys.add(index); // Add the key to the Set
+                    }
+                });
+            });
 
-if (emptyKeys.size > 0) {
-    alert(`The following fields have empty values: ${[...emptyKeys].join(', ')}`);
-}
+            if (emptyKeys.size > 0) {
+                alert(`The following fields have empty values: ${[...emptyKeys].join(', ')}`);
+            }
 
             const formData = new FormData();
-            formData.append("groupName", fontGroup);
+            formData.append("groupName", fontGroupName);
             formData.append("rowData", JSON.stringify(rows));
 
             const delete_font_url = `${window.url}?dispatch=Font.delete`;
@@ -98,18 +116,18 @@ if (emptyKeys.size > 0) {
                 body: formData
             };
 
-            fetch(delete_font_url, options)
-                .then(response => response.json())
-                .then(response => {
-                        alert(response.message)
-                        if (response.status == true) {
-                            // history.push("/all-font")
-                            getFonts();
-                        }
-                })
-                .catch(response => {
-                        console.log(response)
-                })
+            // fetch(delete_font_url, options)
+            //     .then(response => response.json())
+            //     .then(response => {
+            //         alert(response.message)
+            //         if (response.status == true) {
+            //             // history.push("/all-font")
+            //             getFonts();
+            //         }
+            //     })
+            //     .catch(response => {
+            //         console.log(response)
+            //     })
 
         }
     }
@@ -128,6 +146,7 @@ if (emptyKeys.size > 0) {
                 </div>
             </section>
 
+            {/* create font group */}
             <section className="font-group">
                 <div className="container">
 
@@ -143,7 +162,7 @@ if (emptyKeys.size > 0) {
                         {/* group name */}
                         <div className="col-md-12 form-group">
                             <label>Group Name</label>
-                            <input type="text" onInput={ (e) => setFontGroup(e.target.value) } className="form-control"></input>
+                            <input type="text" onInput={(e) => setFontGroupName(e.target.value)} className="form-control"></input>
                         </div>
 
                         {/* add row */}
@@ -231,12 +250,15 @@ if (emptyKeys.size > 0) {
 
                 </div>
             </section>
+            {/* create font group */}
 
+
+            {/* font group data */}
             <section className="all-font-section">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
-                            <table className="table table-striped table-dark">
+                            <table className="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>SI</th>
@@ -246,12 +268,33 @@ if (emptyKeys.size > 0) {
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-
+                                <tbody>
+                                    {allFontGroup.map((value, key) => (
+                                        <tr key={value.id}>
+                                            <td>{key + 1}</td>
+                                            <td>{value.font_group_name}</td>
+                                            <td>
+                                                {value.font_group_data.map((data, index) => (
+                                                    <span key={index} className="badge badge-info">{data.font_name}</span>
+                                                ))}
+                                            </td>
+                                            <td>
+                                                {value.font_group_data.length}
+                                            </td>
+                                            <td>
+                                                <button className="btn btn-sm btn-warning">Edit</button>
+                                                <button className="btn btn-sm btn-danger">Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </section>
+            {/* font group data */}
+
         </div>
     );
 }

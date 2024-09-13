@@ -2,7 +2,7 @@
 
 namespace App\Interfaces\FontGroup;
 
-interface FontGroup{
+interface ReadFontGroupInterface{
      public function allFontsGroup();
 }
 
