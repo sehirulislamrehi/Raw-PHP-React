@@ -1,8 +1,8 @@
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
-import HomeComponent from './Component/Pages/HomeComponent';
 import AllFont from "./Component/Pages/AllFont";
 import FontGroupComponent from "./Component/Pages/FontGroup";
+import EditFontGroup from "./Component/Pages/EditFontGroup";
 
 function App() {
 
@@ -13,12 +13,17 @@ function App() {
 
             {/* Home Component */}
             <Route exact path="/">
-              <HomeComponent ></HomeComponent>
+              <AllFont></AllFont>
             </Route>
 
             {/* Home Component */}
             <Route exact path="/fontGroup">
               <FontGroupComponent></FontGroupComponent>
+            </Route>
+
+            {/* EditFontGroup Component */}
+            <Route path="/editFontGroup/:id">
+              <EditFontGroup></EditFontGroup>
             </Route>
 
       </Switch>

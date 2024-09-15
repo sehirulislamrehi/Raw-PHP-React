@@ -23,34 +23,34 @@ use App\Repositories\FontGroup\WriteFontGroupRepository;
 
 if (isset($_GET['dispatch'])) {
 
-    $controller = isset(explode(".",$_GET['dispatch'])[0]) ? explode(".",$_GET['dispatch'])[0] : "";
-    $method = isset(explode(".",$_GET['dispatch'])[1]) ? explode(".",$_GET['dispatch'])[1] : "";
+    $controller = isset(explode(".", $_GET['dispatch'])[0]) ? explode(".", $_GET['dispatch'])[0] : "";
+    $method = isset(explode(".", $_GET['dispatch'])[1]) ? explode(".", $_GET['dispatch'])[1] : "";
 
     switch ($controller) {
-        
+
         case 'Font':
 
             $readFontRepository = new ReadFontRepository($conn);
             $writeFontRepository = new WriteFontRepository($conn);
-            $fontController = new Font($readFontRepository,$writeFontRepository);
+            $fontController = new Font($readFontRepository, $writeFontRepository);
 
-            switch($method){
-                
+            switch ($method) {
+
                 case 'index':
-                    $response = $fontController->index(); 
-                    sendJsonResponse(200, $response); 
+                    $response = $fontController->index();
+                    sendJsonResponse(200, $response);
                     break;
-        
+
                 case 'create':
-                    $response = $fontController->create(); 
-                    sendJsonResponse(200, $response); 
+                    $response = $fontController->create();
+                    sendJsonResponse(200, $response);
                     break;
-        
+
                 case 'delete':
-                    $response = $fontController->delete(); 
-                    sendJsonResponse(200, $response); 
+                    $response = $fontController->delete();
+                    sendJsonResponse(200, $response);
                     break;
-        
+
                 default:
                     http_response_code(405);
                     echo json_encode(['message' => 'Method not found']);
@@ -63,20 +63,35 @@ if (isset($_GET['dispatch'])) {
 
             $readFontGroupRepository = new ReadFontGroupRepository($conn);
             $writeFontGroupRepository = new WriteFontGroupRepository($conn);
-            $fontGroupController = new FontGroup($readFontGroupRepository,$writeFontGroupRepository);
+            $fontGroupController = new FontGroup($readFontGroupRepository, $writeFontGroupRepository);
 
-            switch($method){
+            switch ($method) {
 
                 case 'index':
                     $response = $fontGroupController->index();
-                    sendJsonResponse(200, $response); 
+                    sendJsonResponse(200, $response);
                     break;
 
                 case 'create':
                     $response = $fontGroupController->create();
-                    sendJsonResponse(200, $response); 
+                    sendJsonResponse(200, $response);
                     break;
-        
+
+                case 'delete':
+                    $response = $fontGroupController->delete();
+                    sendJsonResponse(200, $response);
+                    break;
+
+                case 'edit':
+                    $response = $fontGroupController->edit();
+                    sendJsonResponse(200, $response);
+                    break;
+
+                case 'update':
+                    $response = $fontGroupController->update();
+                    sendJsonResponse(200, $response);
+                    break;
+
                 default:
                     http_response_code(405);
                     echo json_encode(['message' => 'Method not found']);
@@ -86,11 +101,9 @@ if (isset($_GET['dispatch'])) {
             break;
 
         default:
-
             http_response_code(405);
             echo json_encode(['message' => 'Controller not found']);
             break;
-            
     }
 } else {
     http_response_code(404);
@@ -99,7 +112,8 @@ if (isset($_GET['dispatch'])) {
 
 
 // Helper function to send JSON response
-function sendJsonResponse($statusCode, $data) {
+function sendJsonResponse($statusCode, $data)
+{
     http_response_code($statusCode);
     header('Content-Type: application/json');
     echo json_encode($data);

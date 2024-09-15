@@ -24,6 +24,8 @@ class WriteFontRepository implements WriteFontInterface
     public function uploadFonts($params)
     {
         try {
+
+            // UPLOAD FONTS SQL STATEMENT
             $query = $this->conn->prepare("INSERT INTO fonts (name, path, is_active, created_at) VALUES (?, ?, ?, ?)");
 
             if ($query === false) {
@@ -34,33 +36,32 @@ class WriteFontRepository implements WriteFontInterface
                 ];
             }
 
-            // Variables to bind
             $fontName = $params['fontName'];
             $fontPath = $params['destPath'];
-            $isActive = 1; // Use 1 for true, 0 for false
+            $isActive = 1;
             $createdAt = date("Y-m-d H:i:s");
 
-            // Bind parameters
             $query->bind_param("ssis", $fontName, $fontPath, $isActive, $createdAt);
 
-            // Execute the statement
             if (!$query->execute()) {
                 return [
                     "status" => false,
                     "message" => $query->error,
                     "data" => []
                 ];
-            } else {
-
-                // Close the statement
-                $query->close();
-
-                return [
-                    "status" => true,
-                    "message" => "$fontName Inserted",
-                    "data" => []
-                ];
             }
+            // UPLOAD FONTS SQL STATEMENT
+
+
+            // Close the statement
+            $query->close();
+            // Close the statement
+
+            return [
+                "status" => true,
+                "message" => "$fontName Inserted",
+                "data" => []
+            ];
         } catch (Exception $e) {
             return [
                 "status" => false,
@@ -70,12 +71,13 @@ class WriteFontRepository implements WriteFontInterface
         }
     }
 
-    public function deleteFonts($params){
+    public function deleteFonts($params)
+    {
         try {
             $id = $params['font_id'];
 
 
-            //get font
+            //GET FONT SQL STATEMENT
             $query = $this->conn->prepare("SELECT * FROM fonts WHERE id = $id");
 
             if ($query === false) {
@@ -86,35 +88,30 @@ class WriteFontRepository implements WriteFontInterface
                 ];
             }
 
-            // Execute the statement
             if (!$query->execute()) {
                 return [
                     "status" => false,
                     "message" => $query->error,
                     "data" => []
                 ];
-            } else {
-
-                // Fetch results
-                $result = $query->get_result();
-                $fonts = $result->fetch_all(MYSQLI_ASSOC);
-
-                // Close the statement
-                $query->close();
-
-                foreach($fonts as $font){
-                    $path = realpath(__DIR__ . "/../../../" . $font['path']);
-
-                    if(file_exists($path)){
-                        unlink($path);
-                    }
-
-                }
-
             }
 
-            $query = $this->conn->prepare("DELETE FROM fonts WHERE id = $id");
+            $result = $query->get_result();
+            $fonts = $result->fetch_all(MYSQLI_ASSOC);
+            //GET FONT SQL STATEMENT
 
+            //REMOVE THE FONTS FILE
+            foreach ($fonts as $font) {
+                $path = realpath(__DIR__ . "/../../../" . $font['path']);
+
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+            //REMOVE THE FONTS FILE
+
+            //REMOVE THE FONTS
+            $query = $this->conn->prepare("DELETE FROM fonts WHERE id = $id");
             if ($query === false) {
                 return [
                     "status" => false,
@@ -122,35 +119,34 @@ class WriteFontRepository implements WriteFontInterface
                     "data" => []
                 ];
             }
-
-
-            // Execute the statement
             if (!$query->execute()) {
                 return [
                     "status" => false,
                     "message" => $query->error,
                     "data" => []
                 ];
-            } else {
+            }
+            $query->close();
+            //REMOVE THE FONTS
 
-                // Close the statement
-                $query->close();
-
-                $query = $this->conn->prepare("DELETE FROM font_group_data WHERE font_id = $id");
-                if(!$query->execute()) {
-                    return [
-                        "status" => false,
-                        "message" => $query->error,
-                        "data" => []
-                    ];
-                }
-
+            //REMOVE THE FONTS GROUP DATA
+            $query = $this->conn->prepare("DELETE FROM font_group_data WHERE font_id = $id");
+            if (!$query->execute()) {
                 return [
-                    "status" => true,
-                    "message" => "Font removed",
+                    "status" => false,
+                    "message" => $query->error,
                     "data" => []
                 ];
             }
+            $query->close();
+            //REMOVE THE FONTS GROUP DATA
+
+
+            return [
+                "status" => true,
+                "message" => "Font removed",
+                "data" => []
+            ];
         } catch (Exception $e) {
             return [
                 "status" => false,

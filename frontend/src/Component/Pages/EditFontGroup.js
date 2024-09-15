@@ -1,13 +1,35 @@
-import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Navbar from "../../Includes/Navbar"
+import { useParams, useHistory } from "react-router";
+import { useEffect, useState } from "react";
 
-const FontGroupComponent = (props) => {
+const EditFontGroup = (props) => {
 
-    {/* window scroll to top */ }
-    // window.scrollTo(0, 0);
+    const history = useHistory();
+    const [fontGroupData, setfontGroupData] = useState({});
+    const [fontGroupName, setFontGroupName] = useState("");
 
+    //FETCH ALL FONT
+    const getFonts = () => {
+        const get_fonts_url = `${window.url}?dispatch=Font.index`;
+        fetch(get_fonts_url, {
+            method: "GET",
+
+        })
+            .then(response => response.json())
+            .then(response => {
+                if (response.status === true) {
+                    setFonts(response.data);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    const [fonts, setFonts] = useState([]);
+    //FETCH ALL FONT
+
+
+    //DYNAMIC FORM
     const [rows, setRows] = useState([{ id: 1, fontName: '', fontType: '', specificSize: '', priceChange: '' }]);
 
     const appendRow = () => {
@@ -34,61 +56,17 @@ const FontGroupComponent = (props) => {
         );
         setRows(updatedRows);
     };
+    //DYNAMIC FORM
 
-    //FETCH ALL FONT
-    const getFonts = () => {
-        const get_fonts_url = `${window.url}?dispatch=Font.index`;
-        fetch(get_fonts_url, {
-            method: "GET",
-
-        })
-            .then(response => response.json())
-            .then(response => {
-                if (response.status === true) {
-                    setFonts(response.data);
-                }
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-    const [fonts, setFonts] = useState([]);
-    //FETCH ALL FONT
-
-    //FETCH ALL FONT GROUP
-    const getFontGroup = () => {
-        const get_font_group_url = `${window.url}?dispatch=FontGroup.index`;
-        fetch(get_font_group_url, {
-            method: "GET",
-
-        })
-            .then(response => response.json())
-            .then(response => {
-                if (response.status === true) {
-                    setAllFontGroup(response.data);
-                }
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    };
-    const [allFontGroup, setAllFontGroup] = useState([]);
-    //FETCH ALL FONT GROUP
-
-    useEffect(() => {
-        getFontGroup();
-        getFonts();
-    }, []);
 
     //CREATE FONT GROUP
-    const [fontGroupName, setFontGroupName] = useState(null);
-    function createFontGroup() {
+    function updateFontGroup() {
         if (rows.length <= 0) {
             alert("Please add atleast one row")
             return;
         }
 
-        if (window.confirm("Are you sure you want to create font group?")) {
+        if (window.confirm("Are you sure you want to update font group?")) {
             if (!fontGroupName) {
                 alert("Please enter the font group name")
                 return;
@@ -114,19 +92,20 @@ const FontGroupComponent = (props) => {
             const formData = new FormData();
             formData.append("groupName", fontGroupName);
             formData.append("rowData", JSON.stringify(rows));
+            formData.append("id",id)
 
-            const create_font_group_url = `${window.url}?dispatch=FontGroup.create`;
+            const update_font_group_url = `${window.url}?dispatch=FontGroup.update`;
             const options = {
                 method: "POST",
                 body: formData
             };
 
-            fetch(create_font_group_url, options)
+            fetch(update_font_group_url, options)
                 .then(response => response.json())
                 .then(response => {
                     alert(response.message)
                     if (response.status == true) {
-                        getFontGroup();
+                        history.push("/fontGroup")
                     }
                 })
                 .catch(response => {
@@ -138,51 +117,45 @@ const FontGroupComponent = (props) => {
     //CREATE FONT GROUP
 
 
-    //DELETE FONT GROUP
-    function deleteFontGroup(font_group_id) {
+    const { id } = useParams();
+    const getFontGroupByIdUrl = `${window.url}?dispatch=FontGroup.edit&font_group_id=${id}`;
+    useEffect(() => {
 
-        if (window.confirm("Are you sure you want to remove the font group?")) {
-            const formData = new FormData();
-            formData.append("font_group_id", font_group_id);
+        fetch(getFontGroupByIdUrl, {
+            method: "GET"
+        })
+        .then(response => response.json())
+        .then(response => {
+            if(response.status){
+                setfontGroupData(response.data);
+                setFontGroupName(response.data.font_group_name);
 
-            const delete_font_url = `${window.url}?dispatch=FontGroup.delete`;
-            const options = {
-                method: "POST",
-                body: formData
-            };
+                const formattedRows = response.data.font_group_data.map((item, index) => ({
+                    id: index + 1,
+                    fontName: item.font_name,
+                    fontType: item.font_id,
+                    specificSize: item.specific_size,
+                    priceChange: item.price_change
+                }));
+    
+                // Set the mapped data into the rows state
+                setRows(formattedRows);
 
-            fetch(delete_font_url, options)
-                .then(response => response.json())
-                .then(response => {
-                    alert(response.message)
-                    if (response.status == true) {
-                        getFontGroup();
-                    }
-                })
-                .catch(response => {
-                    console.log(response)
-                })
-        }
+            }
+        })
+        .catch(response => {
+            console.log(response)
 
-    }
-    //DELETE FONT GROUP
+        })
 
+
+        getFonts()
+
+    }, [getFontGroupByIdUrl]);
 
     return (
         <div className="id">
             <Navbar></Navbar>
-
-            {/* SECTION TITLE */}
-            {/* <section className="section-title">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <h2>Manage Font Groups</h2>
-                        </div>
-                    </div>
-                </div>
-            </section> */}
-            {/* SECTION TITLE */}
 
             {/* create font group */}
             <section className="font-group">
@@ -191,20 +164,20 @@ const FontGroupComponent = (props) => {
                     <div className="row font-group-row">
 
                         <div className="col-md-6 col-6">
-                            <p>Create Font Group</p>
+                            <p>Edit Font Group <strong>{fontGroupName && fontGroupName}</strong></p>
                         </div>
 
                         {/* submit button */}
                         <div className="col-md-6 col-6 form-group text-right">
-                            <button type="button" className="btn btn-sm btn-info" onClick={createFontGroup}>
-                                Submit
+                            <button type="button" className="btn btn-sm btn-info" onClick={updateFontGroup}>
+                                Update
                             </button>
                         </div>
 
                         {/* group name */}
                         <div className="col-md-12 form-group">
                             <label>Group Name</label>
-                            <input type="text" onInput={(e) => setFontGroupName(e.target.value)} className="form-control"></input>
+                            <input type="text" onInput={(e) => setFontGroupName(e.target.value)} value={fontGroupName && fontGroupName} className="form-control"></input>
                         </div>
 
                         {/* add row */}
@@ -293,56 +266,8 @@ const FontGroupComponent = (props) => {
                 </div>
             </section>
             {/* create font group */}
-
-
-            {/* font group data */}
-            <section className="all-font-section">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-12">
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>SI</th>
-                                        <th>Font Group Name</th>
-                                        <th>Fonts</th>
-                                        <th>Count</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    { allFontGroup && allFontGroup.length > 0 ? (allFontGroup.map((value, key) => (
-                                        <tr key={value.id}>
-                                            <td>{key + 1}</td>
-                                            <td>{value.font_group_name}</td>
-                                            <td>
-                                                {value.font_group_data.map((data, index) => (
-                                                    <span key={index} className="badge badge-info">{data.font_name}</span>
-                                                ))}
-                                            </td>
-                                            <td>
-                                                {value.font_group_data.length}
-                                            </td>
-                                            <td>
-                                                <Link to={`/editFontGroup/${value.id}`} className="btn btn-sm btn-warning">Edit</Link>
-                                                <button className="btn btn-sm btn-danger" onClick={() => deleteFontGroup(value.id)}>Delete</button>
-                                            </td>
-                                        </tr>
-                                    ))) : (
-                                        <tr>
-                                            <td colSpan="5" className="text-center">No data found</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            {/* font group data */}
-
         </div>
     );
 }
 
-export default FontGroupComponent;
+export default EditFontGroup;

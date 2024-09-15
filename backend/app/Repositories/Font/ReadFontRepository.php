@@ -33,8 +33,8 @@ class ReadFontRepository implements ReadFontInterface
     {
         try {
 
+            //GET ALL FONTS SQL STATEMENT
             $query = $this->conn->prepare("SELECT * FROM fonts ORDER BY id DESC");
-
             if ($query === false) {
                 return [
                     "status" => false,
@@ -42,29 +42,26 @@ class ReadFontRepository implements ReadFontInterface
                     "data" => []
                 ];
             }
-
-            // Execute the statement
             if (!$query->execute()) {
                 return [
                     "status" => false,
                     "message" => $query->error,
                     "data" => []
                 ];
-            } else {
-
-                // Fetch results
-                $result = $query->get_result();
-                $fonts = $result->fetch_all(MYSQLI_ASSOC);
-
-                // Close the statement
-                $query->close();
-
-                return [
-                    "status" => true,
-                    "message" => "Fonts retrieved successfully",
-                    "data" => $fonts
-                ];
             }
+            $result = $query->get_result();
+            $fonts = $result->fetch_all(MYSQLI_ASSOC);
+            //GET ALL FONTS SQL STATEMENT
+
+            // Close the statement
+            $query->close();
+            // Close the statement
+
+            return [
+                "status" => true,
+                "message" => "Fonts retrieved successfully",
+                "data" => $fonts
+            ];
         } catch (Exception $e) {
             return [
                 "status" => false,
@@ -73,5 +70,4 @@ class ReadFontRepository implements ReadFontInterface
             ];
         }
     }
-
 }

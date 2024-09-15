@@ -1,90 +1,178 @@
+
+import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Navbar from "../../Includes/Navbar"
 
-import Navbar from "../../Includes/Navbar";
+const AllFont = (props) => {
 
-const AllFont = () => {
+    {/* window scroll to top */ }
+    // window.scrollTo(0, 0);
 
+    //GET FONTS
     const [fonts, setFonts] = useState([]);
-
-    useEffect(() => {
-
-        //get faq data
-        const get_fonts_url = `${window.url}/font`
+    const getFonts = () => {
+        const get_fonts_url = `${window.url}?dispatch=Font.index`;
         fetch(get_fonts_url, {
-            method: "GET"
+            method: "GET",
+
         })
             .then(response => response.json())
             .then(response => {
-                console.log(response)
-                if (response.status == true) {
+                if (response.status === true) {
                     setFonts(response.data);
 
                     const style = document.createElement('style');
+
                     response.data.forEach(font => {
                         style.textContent += `
-                            @font-face {
-                                font-family: '${font.name}';
-                                src: url('${window.image_path}${font.path}') format('truetype');
-                            }
-                        `;
+                          @font-face {
+                              font-family: '${font.name}';
+                              src: url('${window.image_path}${font.path}') format('truetype');
+                          }
+                      `;
                     });
 
                     document.head.appendChild(style);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+    //GET FONTS
 
+    //UPLOAD FONT FILE
+    function uploadFile(e) {
+        const file = e.target.files[0]
+
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+
+        const update_profile_url = `${window.url}?dispatch=Font.create`;
+        const options = {
+            method: "POST",
+            body: formData
+        };
+
+        fetch(update_profile_url, options)
+            .then(response => response.json())
+            .then(response => {
+                alert(response.message)
+                if (response.status == true) {
+                    // history.push("/all-font")
+                    getFonts();
                 }
             })
             .catch(response => {
                 console.log(response)
             })
+    }
+    //UPLOAD FONT FILE
 
-    }, [])
+    useEffect(() => {
+        getFonts();
+    }, []);
+
+    //DELETE FONT
+    function deleteFont(font_id) {
+
+        if (window.confirm("Are you sure you want to remove the font?")) {
+            const formData = new FormData();
+            formData.append("font_id", font_id);
+
+            const delete_font_url = `${window.url}?dispatch=Font.delete`;
+            const options = {
+                method: "POST",
+                body: formData
+            };
+
+            fetch(delete_font_url, options)
+                .then(response => response.json())
+                .then(response => {
+                    alert(response.message)
+                    if (response.status == true) {
+                        // history.push("/all-font")
+                        getFonts();
+                    }
+                })
+                .catch(response => {
+                    console.log(response)
+                })
+        }
+
+    }
+    //DELETE FONT
 
     return (
         <div className="id">
             <Navbar></Navbar>
 
-            <section className="section-title">
+            {/* SECTION TITLE */}
+            {/* <section className="section-title">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
-                            <h2>All Font</h2>
+                            <h2>Manage Fonts</h2>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
+            {/* SECTION TITLE */}
 
+            {/* UPLOAD FONTS FORM */}
+            <section className="file-uploader">
+                <div className="container">
+
+                    <div className="row font-group-row">
+
+                        {/* image */}
+                        <div className="col-md-12">
+                            <label>Upload .ttf file</label> <br></br>
+                            <input type="file" className="form-control-file" onChange={uploadFile} accept=".ttf" ></input>
+                        </div>
+
+                    </div>
+
+                </div>
+            </section>
+            {/* UPLOAD FONTS FORM */}
+
+            {/* FONTS TABLE */}
             <section className="all-font-section">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
-                            <table className="table table-striped table-dark">
+                            <table className="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>SI</th>
-                                        <th>Name</th>
+                                        <th>Font Name</th>
                                         <th>Preview</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {fonts.map((font, index) => (
+                                    {fonts && fonts.length > 0 ? (fonts.map((font, index) => (
                                         <tr key={font.id}>
                                             <td>{index + 1}</td>
                                             <td>{font.name}</td>
                                             <td>
-                                                <p style={{ fontFamily: font.name }}>Example style</p>
+                                                <p style={{ fontFamily: font.name }} className="example-font">Example style</p>
                                             </td>
                                             <td>
-                                                <button>Delete</button>
+                                                <button onClick={() => deleteFont(font.id)} className="btn btn-sm btn-danger">Delete</button>
                                             </td>
                                         </tr>
-                                    ))}
+                                    ))) : (
+                                        <tr><td colSpan="4" className="text-center">No data found</td></tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </section>
+            {/* FONTS TABLE */}
 
         </div>
     );
