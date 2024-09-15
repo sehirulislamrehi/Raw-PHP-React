@@ -105,7 +105,7 @@ const EditFontGroup = (props) => {
                 .then(response => {
                     alert(response.message)
                     if (response.status == true) {
-                        history.push("/fontGroup")
+                        history.push("/")
                     }
                 })
                 .catch(response => {
