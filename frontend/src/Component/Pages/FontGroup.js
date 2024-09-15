@@ -83,8 +83,8 @@ const FontGroupComponent = (props) => {
     //CREATE FONT GROUP
     const [fontGroupName, setFontGroupName] = useState(null);
     function createFontGroup() {
-        if (rows.length <= 0) {
-            alert("Please add atleast one row")
+        if (rows.length <= 1) {
+            alert("Please add atleast two row")
             return;
         }
 
@@ -224,7 +224,7 @@ const FontGroupComponent = (props) => {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Font Name"
+                                            placeholder="Font Name*"
                                             value={row.fontName}
                                             onChange={(e) => updateRow(index, 'fontName', e.target.value)}
                                         />
@@ -237,7 +237,7 @@ const FontGroupComponent = (props) => {
                                             value={row.fontType}
                                             onChange={(e) => updateRow(index, 'fontType', e.target.value)}
                                         >
-                                            <option value="" disabled>Select Font</option>
+                                            <option value="" disabled>Select Font*</option>
                                             {fonts.map((font) => (
                                                 <option key={font.id} value={font.id}>
                                                     {font.name}
@@ -253,7 +253,7 @@ const FontGroupComponent = (props) => {
                                             type="number"
                                             step="0.01"
                                             className="form-control"
-                                            placeholder="Specific Size"
+                                            placeholder="Specific Size*"
                                             value={row.specificSize}
                                             onChange={(e) => updateRow(index, 'specificSize', e.target.value)}
                                         />
@@ -265,7 +265,7 @@ const FontGroupComponent = (props) => {
                                             type="number"
                                             step="0.01"
                                             className="form-control"
-                                            placeholder="Price Change"
+                                            placeholder="Price Change*"
                                             value={row.priceChange}
                                             onChange={(e) => updateRow(index, 'priceChange', e.target.value)}
                                         />
