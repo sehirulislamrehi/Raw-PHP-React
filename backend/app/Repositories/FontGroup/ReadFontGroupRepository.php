@@ -4,7 +4,6 @@ namespace App\Repositories\FontGroup;
 
 use App\Interfaces\FontGroup\ReadFontGroupInterface;
 use Exception;
-use FontLib\Font as FontLibFont;
 
 class ReadFontGroupRepository implements ReadFontGroupInterface
 {

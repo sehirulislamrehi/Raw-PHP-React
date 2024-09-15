@@ -11,16 +11,16 @@ import { Provider } from 'react-redux';
 
 
 
-window.url = "http://localhost/font-group-assesment/backend/routes/router.php"
-window.image_path = "http://localhost/font-group-assesment/backend/"
-const myStore = createStore(allReducer)
+// window.url = "http://localhost/font-group-assesment/backend/routes/router.php"
+// window.image_path = "http://localhost/font-group-assesment/backend/"
+// const myStore = createStore(allReducer)
 
-// window.url = "http://127.0.0.1:8000/api"
-// window.image_path = "http://127.0.0.1:8000"
-// const myStore = createStore(
-//   allReducer,
-//   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-// )
+window.url = "https://zeptoapps-backend.sehirulislamrehi.com/routes/router.php"
+window.image_path = "https://zeptoapps-backend.sehirulislamrehi.com/"
+const myStore = createStore(
+  allReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
 
 
 const rootElement = document.getElementById('root');

@@ -140,7 +140,9 @@ const EditFontGroup = (props) => {
     
                 // Set the mapped data into the rows state
                 setRows(formattedRows);
-
+            }
+            else{
+                history.push("/fontGroup")
             }
         })
         .catch(response => {
